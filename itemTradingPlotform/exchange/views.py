@@ -79,7 +79,7 @@ def login(request):
         user_id = request.session.get('user_id')
         return redirect('/publish/')
 
-    if request.method == 'POST':
+    if request.method == 'POST': 
         login_form = UserForm(request.POST)  
         message = ''
         if login_form.is_valid():
