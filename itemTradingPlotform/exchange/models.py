@@ -49,7 +49,7 @@ class Requirement(models.Model):
 
     def __str__(self):
         return self.keywords
-
+ 
 # class Receive(models.Model):
 #     user_id = models.ForeignKey(to='User',to_field='id',on_delete=models.CASCADE)
 #     requirement_id = models.ForeignKey(to='Requirement',to_field='id',on_delete=models.CASCADE)
