@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>同路人</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+
+    <link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- styles -->
+
+    <link href="{% static '/css/styles.css' %}" rel="stylesheet">
+
+  
+
+    <style>
+
+        body{
+
+            background-image: url("{% static 'images/background1.jpg' %}");
+
+            background-size: cover;
+
+            background-attachment: fixed;
+
+        }
+
+        .h1{
+
+            margin-top: 0px;
+
+        }
+
+		.center{			text-align:center
+
+		}
+
+		label {
+
+            font-size:15px;
+
+            width: 100px;
+
+        }
+
+        .s{
+
+            display: inline-block;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <!-- Logo -->
+
+                <div class="logo">
+
+                    <h1><a href=" ">同路人</a ></h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="page-content container h1">
+
+    <div class="row">
+
+        <div class="col-md-4 col-md-offset-4">
+
+            <div class="login-wrapper">
+
+                <div class="box">
+
+                    <form class="content-wrap" role="form" action="/register/" method="post" novalidate>
+
+                        <h3 class="center">注册</h3>
+
+                        {% csrf_token %}
+
+                        {% for field in register_form %}
+
+                            <div class="form-group">
+
+                                <label>{{ field.label }}</label>
+
+                                {{ field }}
+
+                                
+
+                                {% if field.errors %}
+
+                                    <p style="color:red; font-size: 10px">{{field.errors.0}}</p >
+
+                                {% else %}
+                              {% if message == '两次输入的密码不同' and field.label == '确认密码' %}
+                                        <p style="color:red; font-size: 10px">{{ message }}</p >
+                                    {% elif message == '用户已存在' and field.label == '用户名' %}
+                                        <p style="color:red; font-size: 10px">{{ message }}</p >
+                                    {% elif message == '该手机已被注册' and field.label == '联系方式' %}
+                                        <p style="color:red; font-size: 10px">{{ message }}</p >
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="center action">
+                            <button type="submit" class="btn btn-primary">注册</button>
+                        </div>
+                    </form>
+                    <div class="already">
+                        <p>已有账户?</p >
+                        <a href=" ">登录</a >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var countdown=60;
+    function settime(obj) {
+        if (countdown == 0) {
+            obj.removeAttribute("disabled");
+            obj.value="免费获取验证码";
+            countdown = 60;
+            return;
+        } else {
+            obj.setAttribute("disabled", true);
+            obj.value="重新发送(" + countdown + "s)";
+            countdown--;
+        }
+    setTimeout(function() {
+        settime(obj) }
+        ,1000)
+    }
+</script>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+</body>
+</html>
