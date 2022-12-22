@@ -18,7 +18,7 @@ class User(AbstractUser):
 class Requirement(models.Model):
     class EmergencyDegree(models.IntegerChoices):
         URGENCY = 1
-        NORM = 2
+        NORM = 2 
         LOOSENESS = 3
     
     class MaterialType(models.TextChoices):
