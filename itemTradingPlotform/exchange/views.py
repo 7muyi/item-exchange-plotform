@@ -89,7 +89,7 @@ def login(request):
                 user = User.objects.get(username=username)
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
-                    request.session['user_id'] = user.id
+                    request.session['user_id'] = user.id 
                     request.session['user_name'] = user.username
                     user.last_login = now
                     return redirect(f'/publish/')
