@@ -25,7 +25,7 @@ urlpatterns = [
     path('captcha/',include('captcha.urls')),
 
     path('publish/me/',views.publish_me),
-    path('publish/',views.publish),
+    path('publish/',views.publish), 
 
     path('receive/<int:rid>/',views.receive_requirement),
     path('receive/list/',views.receive_list),
