@@ -174,7 +174,7 @@ def receive_requirement(request, rid):
     return redirect('/receive/list')
 
 def concel_requirement(request, rid):
-    Requirement.objects.get(id=rid).delete()
+    Requirement.objects.get(id=rid).delete()   
     return redirect('/publish/me')
 
 def abandon_requirement(request, rid):
