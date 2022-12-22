@@ -1,0 +1,123 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>同路人</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="{% static '/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- styles -->
+    <link href="{% static '/css/styles.css' %}" rel="stylesheet">
+
+    {% block style %}
+    {% endblock %}
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Logo -->
+                <div class="logo">
+                    <h1><a href="/">同路人</a></h1>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="input-group form">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+	                         <button class="btn btn-primary" type="button">搜索</button>
+	                       </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="navbar navbar-inverse" role="banner">
+                    <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">我的账户<b class="caret"></b></a>
+                                <ul class="dropdown-menu animated fadeInUp">
+                                    <li><a href="/logout">退出登录</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-content">
+    <div class="row">
+        
+        <div class="col-md-2">
+            <div class="sidebar content-box" style="display: block;">
+                <ul class="nav">
+                    <li>
+                        {% block info %}
+                        {% endblock %}
+                    </li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> 发布信息
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <ul>
+                            {% block publish %}
+                            {% endblock %}
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> 接受信息
+                            <span class="caret pull-right"></span>
+                        </a>
+                        <ul>
+                            {% block receive %}
+                            {% endblock %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {% block right %}
+        {% endblock %}
+
+    </div>
+</div>
+
+<footer style="width: 100%;">
+    <div class="container">
+
+        <div class="copy text-center">
+            Copyright 2022 <a href='#'>itemTradingPlatform</a>
+        </div>
+
+    </div>
+</footer>
+{% block js %}
+{% endblock %}
+<link href="{% static '/vendors/datatables/dataTables.bootstrap.css' %}" rel="stylesheet" media="screen">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+<!-- jQuery UI -->
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static '/bootstrap/js/bootstrap.min.js' %}"></script>
+
+<script src="{% static '/vendors/datatables/js/jquery.dataTables.min.js' %}"></script>
+
+<script src="{% static '/vendors/datatables/dataTables.bootstrap.js' %}"></script>
+
+<script src="{% static '/js/custom.js' %}"></script>
+<script src="{% static '/js/tables.js' %}"></script>
+</body>
+</html>
