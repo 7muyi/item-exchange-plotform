@@ -228,3 +228,11 @@ def info_edit(request):
             return render(request, 'user_info.html', locals())
     return render(request, 'user_info.html', locals())
 
+
+
+
+
+
+
+
+
