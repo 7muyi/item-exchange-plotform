@@ -1,0 +1,662 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block style %}
+    <style>
+        .mailTable{
+            display:inline-block;
+            margin-top: 10px;
+            margin-left: 50px;
+            width: 25%;
+            border: 3px solid #E6EAEE;
+            border-radius: 15px;
+        }
+        .mailTable tr td{
+            width: 150px;
+            height: 20px;
+            line-height: 20px;
+            box-sizing: border-box;
+            padding: 10px;
+            border-bottom: 1px solid #E6EAEE;
+            border-right: 1px solid #E6EAEE;
+        }
+        .mailTable tr td.column {
+            background-color: #EFF3F6;
+            color: #393C3E;
+            width: 40%;
+        }
+        .white_content {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 35%;
+            width: 30%;
+            height: 300px;
+            padding: 20px;
+            border: 5px solid black;
+            border-radius: 20px;
+            background-color: white;
+            z-index:1002;
+            overflow: auto;
+        }
+        .floating{
+            margin: 0 auto;
+            width: 30%;
+        }
+        .floating tr td{ 
+            padding:10px;
+            font-size: 18px;
+            white-space: nowrap;
+        }
+        .box{
+            border: 1px solid black;
+        }
+        .lay{
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            font-size: 16px;
+            background-color: rgba(0, 0, 0, 0.5);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000);
+            display: none;
+        }
+            /* 弹出框主体 */
+        .popup {
+            background-color: #ffffff;
+            max-width: 400px;
+            min-width: 200px;
+            height: 240px;
+            border-radius: 5px;
+            margin: 250px auto;
+            text-align: center;
+        }
+            /* 弹出框的标题 */
+        .popup_title {
+            height: 60px;
+            line-height: 60px;
+            border-bottom: solid 1px #cccccc;
+        }
+            /* 弹出框的内容 */
+        .popup_content {
+            height: 50px;
+            line-height: 50px;
+            padding: 15px 20px;
+        }
+        .info_content{
+            height: 50px;
+            line-height: 50px;
+            padding: 15px 20px;
+            display:inline-block;
+            margin-top:50px;
+        }
+            /* 弹出框的按钮栏 */
+        .popup_btn {
+            padding-bottom: 10px;
+            margin-top:20px;
+        }
+            /* 弹出框的按钮 */
+        .popup_btn button {
+            color: #778899;
+            width: 40%;
+            height: 40px;
+            cursor: pointer;
+            border: solid 1px #cccccc;
+            border-radius: 5px;
+            margin: 5px 10px;
+            color: #ffffff;
+            background-color: #337ab7;
+        }
+    </style>
+{% endblock %}
+
+{% block info %}
+    <a href="/info/edit">
+        <i class="glyphicon glyphicon-list"></i> 个人信息
+    </a>
+{% endblock %}
+
+{% block publish %}
+    <li><a href="/publish">发布信息</a></li>
+    <li class="current"><a href="/publish/me/">自己发布的信息</a></li>
+{% endblock %}
+
+{% block receive %}
+    <li><a href="/receive/list">别人的发布</a></li>
+<li><a href="/receive/me">已接的信息</a></li>
+{% endblock %}
+
+{% block right %}
+    <div class="col-md-10">
+        <div class="content-box-large">
+            <div class="panel-heading">
+                <div class="panel-title">已发布的需求</div>
+            </div>
+            <div class="panel-body">
+                {% if query_set %}
+                    {% for requirement in query_set %}
+                    {% if requirement.status == 3 %}    
+                            <table class="mailTable" id="tt{{ forloop.counter0 }}" background="{% static '/images/finish.png' %}" cellspacing="0" cellpadding="0"  style="background-size:60% 60%; background-position: center; background-repeat:no-repeat;">
+                        {% else %}
+                            <table class="mailTable" id="tt{{ forloop.counter0 }}" cellspacing="0" cellpadding="0">
+                        {% endif %}
+                        <!-- <table class="mailTable" id = "tt{{ forloop.counter0 }}" cellspacing="0" cellpadding="0"> -->
+                            <tr>
+                                <td>物品种类</td>
+                                <td>{{ requirement.material_type }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>关键字</td>
+                                <td>{{ requirement.keywords }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>发布时间</td>
+                                <td>{{ requirement.pub_time }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>状态</td>
+                                {% if requirement.status == 1 %}
+                                    <td>还未接取</td>
+                                {% elif requirement.status == 2 %}
+                                    <td>已被接取</td>
+                                {% else %}
+                                    <td>已经完成</td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <!-- <td></td> -->
+                                {% if forloop.counter0 == 0 %}
+                                    <td colspan="2" class="text-center"><a href="JavaScript:void(0)" onclick="openDialog0()">查看详情</a></td>
+                                {% endif %}
+
+                                {% if forloop.counter0 == 1 %}
+                                    <td colspan="2" class="text-center"><a href="JavaScript:void(0)" onclick="openDialog1()">查看详情</a></td>
+                                {% endif %}
+
+                                {% if forloop.counter0 == 2 %}
+                                    <td colspan="2" class="text-center"><a href="JavaScript:void(0)" onclick="openDialog2()">查看详情</a></td>
+                                {% endif %}
+
+                                {% if forloop.counter0 == 3 %}
+                                    <td colspan="2" class="text-center"><a href="JavaScript:void(0)" onclick="openDialog3()">查看详情</a></td>
+                                {% endif %}
+
+                                {% if forloop.counter0 == 4 %}
+                                    <td colspan="2" class="text-center"><a href="JavaScript:void(0)" onclick="openDialog4()">查看详情</a></td>
+                                {% endif %}
+
+                                {% if forloop.counter0 == 5 %}
+                                    <td colspan="2" class="text-center"><a href="JavaScript:void(0)" onclick="openDialog5()">查看详情</a></td>
+                                {% endif %}
+                            </tr>
+                        </table>
+                    {% endfor %}
+                {% else %}
+                    <div style="margin: 60px auto;width:100px;">
+                        <img src="{% static '/images/nodata.png' %}" alt="" style="height:100px;width:100px;" />
+                        <p style="font-size: 20px;text-align:center">无数据</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="text-center">
+                <ul class="pagination">
+                    {{ page_html_string }}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% for requirement in query_set %}
+        <div id="light{{ forloop.counter0 }}" class="white_content">
+            <h3 class="text-center">详细信息</h3>
+            <table class="floating">
+                <tr>
+                    <td>物品种类</td>
+                    <td>{{ requirement.material_type }}</td>
+                </tr>
+                <tr>
+                    <td>紧急程度</td>
+                    <td>{{ requirement.emergency_degree }}</td>
+                </tr>
+                <tr>
+                    <td>物品信息</td>
+                    <td>{{ requirement.body }}</td>
+                </tr>
+            </table>
+            <div class="text-center" style="margin-top:20px;">
+                {% if forloop.counter0 == 0 %}
+                    {% if requirement.status == 2 %}
+                        <btn class="btn btn-primary" id="showPopup10" onclick="showPopup10()">完成</btn>
+                    {% endif %}
+                    {% if requirement.status != 3 %}
+                            <btn class="btn btn-primary" id="showPopup20" onclick="showPopup20()">撤回</btn>
+                    {% endif %}
+                    <btn class="btn box" href="javascript:void(0)" onclick="closeDialog0()">关闭</btn>
+                {% endif %}
+
+                {% if forloop.counter0 == 1 %}
+                    {% if requirement.status == 2 %}
+                        <btn class="btn btn-primary" id="showPopup11" onclick="showPopup11()">完成</btn>
+                    {% endif %}
+                    {% if requirement.status != 3 %}
+                        <btn class="btn btn-primary" id="showPopup21" onclick="showPopup21()">撤回</btn>
+                    {% endif %}
+                    <btn class="btn box" href="javascript:void(0)" onclick="closeDialog1()">关闭</btn>
+                {% endif %}
+
+                {% if forloop.counter0 == 2 %}
+                    {% if requirement.status == 2 %}
+                        <btn class="btn btn-primary" id="showPopup12" onclick="showPopup12()">完成</btn>
+                    {% endif %}
+                    {% if requirement.status != 3 %}
+                        <btn class="btn btn-primary" id="showPopup22" onclick="showPopup22()">撤回</btn>
+                    {% endif %}
+                    <btn class="btn box" href="javascript:void(0)" onclick="closeDialog2()">关闭</btn>
+                {% endif %}
+
+                {% if forloop.counter0 == 3 %}
+                    {% if requirement.status == 2 %}
+                        <btn class="btn btn-primary" id="showPopup13" onclick="showPopup13()">完成</btn>
+                    {% endif %}
+                    {% if requirement.status != 3 %}
+                        <btn class="btn btn-primary" id="showPopup23" onclick="showPopup23()">撤回</btn>
+                    {% endif %}
+                    <btn class="btn box" href="javascript:void(0)" onclick="closeDialog3()">关闭</btn>
+                {% endif %}
+
+                {% if forloop.counter0 == 4 %}
+                    {% if requirement.status == 2%}
+                        <btn class="btn btn-primary" id="showPopup14" onclick="showPopup14()">完成</btn>
+                    {% endif %}
+                    {% if requirement.status != 3 %}
+                        <btn class="btn btn-primary" id="showPopup24" onclick="showPopup24()">撤回</btn>
+                    {% endif %}
+                    <btn class="btn box" href="javascript:void(0)" onclick="closeDialog4()">关闭</btn>
+                {% endif %}
+
+                {% if forloop.counter0 == 5 %}
+                    {% if requirement.status == 2 %}
+                        <btn class="btn btn-primary" id="showPopup15" onclick="showPopup15()">完成</btn>
+                    {% endif %}
+                    {% if requirement.status != 3 %}
+                        <btn class="btn btn-primary" id="showPopup25" onclick="showPopup25()">撤回</btn>
+                    {% endif %}
+                    <btn class="btn box" href="javascript:void(0)" onclick="closeDialog5()">关闭</btn>
+                {% endif %}
+            </div>
+        </div>
+        <div id="overlay_finish{{ forloop.counter0 }}" class="lay">
+            <div class="popup">
+                <p class="popup_title">提示</p>
+                <p class="popup_content">是否确认完成这条互助信息</p>
+                <div class="popup_btn">
+                    {% if forloop.counter0 == 0 %}
+                        <button class="cancelBtn" onclick="showFinish0()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup10()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 1 %}
+                        <button class="cancelBtn" onclick="showFinish1()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup11()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 2 %}
+                        <button class="cancelBtn" onclick="showFinish2()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup12()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 3 %}
+                        <button class="cancelBtn" onclick="showFinish3()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup13()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 4 %}
+                        <button class="cancelBtn" onclick="showFinish4()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup14()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 5 %}
+                        <button class="cancelBtn" onclick="showFinish5()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup15()">取消</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div id="overlay_withdraw{{ forloop.counter0 }}" class="lay">
+            <div class="popup">
+                <p class="popup_title">提示</p>
+                <p class="popup_content">是否确认撤回这条互助信息</p>
+                <div class="popup_btn" >
+                    {% if forloop.counter0 == 0 %}
+                        <!-- <form style="display:inline-block" action="/delete/{{ query_set.0.id }}/"> -->
+                            <button class="cancelBtn" onclick="showWithdraw0()">确认</button>
+                        <!-- </form> -->
+                        <button class="confirmBtn" onclick="hidePopup20()">取消</button>
+                    {% endif %}
+                    
+                    {% if forloop.counter0 == 1 %}
+                        <button class="cancelBtn" onclick="showWithdraw1()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup21()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 2 %}
+                        <button class="cancelBtn" onclick="showWithdraw2()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup22()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 3 %}
+                        <button class="cancelBtn" onclick="showWithdraw3()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup3()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 4 %}
+                        <button class="cancelBtn" onclick="showWithdraw4()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup24()">取消</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 5 %}
+                        <button class="cancelBtn" onclick="showWithdraw5()">确认</button>
+                        <button class="confirmBtn" onclick="hidePopup25()">取消</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div id="finish{{ forloop.counter0 }}" class="lay">
+            <div class="popup">
+                <div class="info_content">这条互助信息已完成！</div>
+                <div class="popup_btn">
+                    {% if forloop.counter0 == 0 %}
+                        <button class="cancelBtn" onclick="hideFinish0()">确认</button>
+                    {% endif %}
+                    
+                    {% if forloop.counter0 == 1 %}
+                        <button class="cancelBtn" onclick="hideFinish1()">确认</button>
+                    {% endif %}
+                    
+                    {% if forloop.counter0 == 2 %}
+                        <button class="cancelBtn" onclick="hideFinish2()">确认</button>
+                    {% endif %}
+                    
+                    {% if forloop.counter0 == 3 %}
+                        <button class="cancelBtn" onclick="hideFinish3()">确认</button>
+                    {% endif %}
+                    
+                    {% if forloop.counter0 == 4 %}
+                        <button class="cancelBtn" onclick="hideFinish4()">确认</button>
+                    {% endif %}
+
+                    {% if forloop.counter0 == 5 %}
+                        <button class="cancelBtn" onclick="hideFinish5()">确认</button>
+                    {% endif %}                
+                </div>
+            </div>
+        </div>
+        <div id="withdraw{{ forloop.counter0 }}" class="lay">
+            <div class="popup">
+                <div class="info_content">这条互助信息已撤回！</div>
+                <div class="popup_btn">
+                    {% if forloop.counter0 == 0 %}
+                        <button class="cancelBtn" onclick="hideWithdraw0()">确认</button>
+                    {% endif %}
+                    {% if forloop.counter0 == 1 %}
+                        <button class="cancelBtn" onclick="hideWithdraw1()">确认</button>
+                    {% endif %}
+                    {% if forloop.counter0 == 2 %}
+                        <button class="cancelBtn" onclick="hideWithdraw2()">确认</button>
+                    {% endif %}
+                    {% if forloop.counter0 == 3 %}
+                        <button class="cancelBtn" onclick="hideWithdraw3()">确认</button>
+                    {% endif %}
+                    {% if forloop.counter0 == 4 %}
+                        <button class="cancelBtn" onclick="hideWithdraw4()">确认</button>
+                    {% endif %}
+                    {% if forloop.counter0 == 5 %}
+                        <button class="cancelBtn" onclick="hideWithdraw5()">确认</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        var emergency = {{ emergency }}
+        for (var i = 0 ; i < 6 ; ++i){
+            var name = "tt" + i
+            var table = document.getElementById(name)
+            if (emergency[i] == 1){
+                table.style.backgroundColor = "#FF6E6E"
+            }else if(emergency[i] == 2){
+                table.style.backgroundColor = "#FFCC99"
+            }else{
+                table.style.backgroundColor = "#90EE90"
+            }
+        }
+        function openDialog0(){
+            document.getElementById('light0').style.display='block';
+        }
+        function closeDialog0(){
+            document.getElementById('light0').style.display='none';
+        }
+        function showPopup10(){
+            document.getElementById("overlay_finish0").style.display = "block";
+            document.getElementById('light0').style.display='none';
+        }
+        function hidePopup10(){
+            document.getElementById("overlay_finish0").style.display = "none";
+        }
+        function showPopup20(){
+            document.getElementById("overlay_withdraw0").style.display = "block";
+            document.getElementById('light0').style.display='none';
+        }
+        function hidePopup20(){
+            document.getElementById("overlay_withdraw0").style.display = "none";
+        }
+        function showFinish0(){
+            document.getElementById("finish0").style.display = "block";
+            document.getElementById("overlay_finish0").style.display = "none";
+        }
+        function hideFinish0(){
+            self.location='/finish/{{ query_set.0.id }}/'
+            document.getElementById("finish0").style.display = "none";
+        }
+        function showWithdraw0(){
+            document.getElementById("withdraw0").style.display = "block";
+            document.getElementById("overlay_withdraw0").style.display = "none";
+        }
+        function hideWithdraw0(){
+            self.location='/delete/{{ query_set.0.id }}/'
+            document.getElementById("withdraw0").style.display = "none";
+        }
+        
+        function openDialog1(){
+            document.getElementById('light1').style.display='block';
+        }
+        function closeDialog1(){
+            document.getElementById('light1').style.display='none';
+        }
+        function showPopup11(){
+            document.getElementById("overlay_finish1").style.display = "block";
+            document.getElementById('light1').style.display='none';
+        }
+        function hidePopup11(){
+            document.getElementById("overlay_finish1").style.display = "none";
+        }
+        function showPopup21(){
+            document.getElementById("overlay_withdraw1").style.display = "block";
+            document.getElementById('light1').style.display='none';
+        }
+        function hidePopup21(){
+            document.getElementById("overlay_withdraw1").style.display = "none";
+        }
+        function showFinish1(){
+            document.getElementById("finish1").style.display = "block";
+            document.getElementById("overlay_finish1").style.display = "none";
+        }
+        function hideFinish1(){
+            self.location='/finish/{{ query_set.1.id }}/'
+            document.getElementById("finish1").style.display = "none";
+        }
+        function showWithdraw1(){
+            document.getElementById("withdraw1").style.display = "block";
+            document.getElementById("overlay_withdraw1").style.display = "none";
+        }
+        function hideWithdraw1(){
+            self.location='/delete/{{ query_set.1.id }}/'
+            document.getElementById("withdraw1").style.display = "none";
+        }
+
+        function openDialog2(){
+            document.getElementById('light2').style.display='block';
+        }
+        function closeDialog2(){
+            document.getElementById('light2').style.display='none';
+        }
+        function showPopup12(){
+            document.getElementById("overlay_finish2").style.display = "block";
+            document.getElementById('light2').style.display='none';
+        }
+        function hidePopup12(){
+            document.getElementById("overlay_finish2").style.display = "none";
+        }
+        function showPopup22(){
+            document.getElementById("overlay_withdraw2").style.display = "block";
+            document.getElementById('light2').style.display='none';
+        }
+        function hidePopup22(){
+            document.getElementById("overlay_withdraw2").style.display = "none";
+        }
+        function showFinish2(){
+            document.getElementById("finish2").style.display = "block";
+            document.getElementById("overlay_finish2").style.display = "none";
+        }
+        function hideFinish2(){
+            self.location='/finish/{{ query_set.2.id }}/'
+            document.getElementById("finish2").style.display = "none";
+        }
+        function showWithdraw2(){
+            document.getElementById("withdraw2").style.display = "block";
+            document.getElementById("overlay_withdraw2").style.display = "none";
+        }
+        function hideWithdraw2(){
+            self.location='/delete/{{ query_set.2.id }}/'
+            document.getElementById("withdraw2").style.display = "none";
+        }
+
+        function openDialog3(){
+            document.getElementById('light3').style.display='block';
+        }
+        function closeDialog3(){
+            document.getElementById('light3').style.display='none';
+        }
+        function showPopup13(){
+            document.getElementById("overlay_finish3").style.display = "block";
+            document.getElementById('light3').style.display='none';
+        }
+        function hidePopup13(){
+            document.getElementById("overlay_finish3").style.display = "none";
+        }
+        function showPopup23(){
+            document.getElementById("overlay_withdraw3").style.display = "block";
+            document.getElementById('light3').style.display='none';
+        }
+        function hidePopup23(){
+            document.getElementById("overlay_withdraw3").style.display = "none";
+        }
+        function showFinish3(){
+            document.getElementById("finish3").style.display = "block";
+            document.getElementById("overlay_finish3").style.display = "none";
+        }
+        function hideFinish3(){
+            self.location='/finish/{{ query_set.3.id }}/'
+            document.getElementById("finish3").style.display = "none";
+        }
+        function showWithdraw3(){
+            document.getElementById("withdraw3").style.display = "block";
+            document.getElementById("overlay_withdraw3").style.display = "none";
+        }
+        function hideWithdraw3(){
+            self.location='/delete/{{ query_set.3.id }}/'
+            document.getElementById("withdraw3").style.display = "none";
+        }
+
+        function openDialog4(){
+            document.getElementById('light4').style.display='block';
+        }
+        function closeDialog4(){
+            document.getElementById('light4').style.display='none';
+        }
+        function showPopup14(){
+            document.getElementById("overlay_finish4").style.display = "block";
+            document.getElementById('light4').style.display='none';
+        }
+        function hidePopup14(){
+            document.getElementById("overlay_finish4").style.display = "none";
+        }
+        function showPopup24(){
+            document.getElementById("overlay_withdraw4").style.display = "block";
+            document.getElementById('light4').style.display='none';
+        }
+        function hidePopup24(){
+            document.getElementById("overlay_withdraw4").style.display = "none";
+        }
+        function showFinish4(){
+            document.getElementById("finish4").style.display = "block";
+            document.getElementById("overlay_finish4").style.display = "none";
+        }
+        function hideFinish4(){
+            self.location='/finish/{{ query_set.4.id }}/'
+            document.getElementById("finish4").style.display = "none";
+        }
+        function showWithdraw4(){
+            document.getElementById("withdraw4").style.display = "block";
+            document.getElementById("overlay_withdraw4").style.display = "none";
+        }
+        function hideWithdraw4(){
+            self.location='/delete/{{ query_set.4.id }}/'
+            document.getElementById("withdraw4").style.display = "none";
+        }
+
+        function openDialog5(){
+            document.getElementById('light5').style.display='block';
+        }
+        function closeDialog5(){
+            document.getElementById('light5').style.display='none';
+        }
+        function showPopup15(){
+            document.getElementById("overlay_finish5").style.display = "block";
+            document.getElementById('light5').style.display='none';
+        }
+        function hidePopup15(){
+            document.getElementById("overlay_finish5").style.display = "none";
+        }
+        function showPopup25(){
+            document.getElementById("overlay_withdraw5").style.display = "block";
+            document.getElementById('light5').style.display='none';
+        }
+        function hidePopup25(){
+            document.getElementById("overlay_withdraw5").style.display = "none";
+        }
+        function showFinish5(){
+            document.getElementById("finish5").style.display = "block";
+            document.getElementById("overlay_finish5").style.display = "none";
+        }
+        function hideFinish5(){
+            self.location='/finish/{{ query_set.5.id }}/'
+            document.getElementById("finish5").style.display = "none";
+        }
+        function showWithdraw5(){
+            document.getElementById("withdraw5").style.display = "block";
+            document.getElementById("overlay_withdraw5").style.display = "none";
+        }
+        function hideWithdraw5(){
+            self.location='/delete/{{ query_set.5.id }}/'
+            document.getElementById("withdraw5").style.display = "none";
+        }
+    </script>
+{% endblock %}
