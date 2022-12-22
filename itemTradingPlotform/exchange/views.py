@@ -96,7 +96,7 @@ def login(request):
                 else:
                     message = '密码不正确'
             except:
-                message = '用户不存在' 
+                message = '用户不存在'  
         return render(request,'login.html', locals())
     
     login_form = UserForm()
