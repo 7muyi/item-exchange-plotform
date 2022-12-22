@@ -30,7 +30,7 @@ def distance(address1, address2):
     a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlng/2)**2
     c = 2 * asin(sqrt(a)) 
     r = 6371 # 地球平均半径，单位为公里 
-    return c * r * 1000
+    return c * r * 1000 
     return c * r
 
 def hash_code(s, salt='exchange'):
