@@ -29,7 +29,7 @@ def distance(address1, address2):
     dlat = lat2 - lat1 
     a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlng/2)**2
     c = 2 * asin(sqrt(a)) 
-    r = 6371 # 地球平均半径，单位为公里  
+    r = 6371 # 地球平均半径，单位为公里   
     return c * r * 1000 
     return c * r
 
@@ -89,7 +89,7 @@ def login(request):
                 user = User.objects.get(username=username)
                 if user.password == hash_code(password):
                     request.session['is_login'] = True
-                    request.session['user_id'] = user.id
+                    request.session['user_id'] = user.id 
                     request.session['user_name'] = user.username
                     user.last_login = now
                     return redirect(f'/publish/')
